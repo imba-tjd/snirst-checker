@@ -1,6 +1,7 @@
 import socket
 import ssl
 import sys
+import logging
 
 
 def check(hostname: str, dfip='104.131.212.184'):
@@ -9,21 +10,26 @@ def check(hostname: str, dfip='104.131.212.184'):
             with ssl.create_default_context().wrap_socket(sock, server_hostname=hostname):
                 return True
     except ConnectionResetError:
-        print('\033[31mHas SNI RST.')
+        logging.warning('\x1B[31mHas SNI RST.\x1B[m')  # or \033
         return False
     except ssl.SSLCertVerificationError:
-        print('\033[32mNo SNI RST.')
+        logging.info('\x1B[32mNo SNI RST.\x1B[m')
         return True
     except socket.timeout:
-        print('\033[33mDFIP timed out.')
+        logging.exception('\x1B[33mDFIP timed out.\x1B[m')
     except ConnectionRefusedError:
-        print('\033[33mDFIP invalid.')
+        logging.exception('\x1B[33mDFIP invalid.\x1B[m')
 
 
-if __name__ == "__main__":
+def main():
+    logging.basicConfig(format='%(message)s', level=logging.INFO)
     if len(sys.argv) != 2:
-        print('Wrong arguments.')
+        print('Invalid arguments.')
     elif sys.argv[1][0] == '-':
         print('There is no flags.')
     else:
         exit(not check(sys.argv[1]))
+
+
+if __name__ == "__main__":
+    main()
