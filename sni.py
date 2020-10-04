@@ -1,3 +1,4 @@
+'''Check whether a domain has SNI RST.'''
 import socket
 import ssl
 import sys
@@ -5,6 +6,7 @@ import logging
 
 
 def check(hostname: str, dfip='104.131.212.184'):
+    '''True if no SNI RST, False if has, None if DFIP timeout or invalid.'''
     try:
         with socket.create_connection((dfip, 443), 5) as sock:
             with ssl.create_default_context().wrap_socket(sock, server_hostname=hostname):
@@ -21,7 +23,7 @@ def check(hostname: str, dfip='104.131.212.184'):
         logging.exception('\x1B[33mDFIP invalid.\x1B[m')
 
 
-def main():
+def _main():
     logging.basicConfig(format='%(message)s', level=logging.INFO)
     if len(sys.argv) != 2:
         print('Invalid arguments.')
@@ -32,4 +34,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    _main()
