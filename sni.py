@@ -30,7 +30,7 @@ def _main():
     elif sys.argv[1][0] == '-':
         print('There is no flags.')
     else:
-        exit(not check(sys.argv[1]))
+        sys.exit(not check(sys.argv[1]))
 
 
 if __name__ == "__main__":
