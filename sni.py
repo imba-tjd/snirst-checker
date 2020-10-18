@@ -1,26 +1,29 @@
-'''Check whether a domain has SNI RST.'''
+'''Check whether a domain has SNI RST.
+Set logger.disabled=True to avoid any output.'''
 import socket
 import ssl
 import sys
 import logging
 
 
+logger = logging.getLogger(__name__)
+_ctx = ssl.create_default_context()
+
+
 def check(hostname: str, dfip='104.131.212.184'):
-    '''True if no SNI RST, False if has, None if DFIP timeout or invalid.'''
+    '''True if no SNI RST, False if has, None if DFIP timeout.'''
     try:
         with socket.create_connection((dfip, 443), 5) as sock:
-            with ssl.create_default_context().wrap_socket(sock, server_hostname=hostname):
+            with _ctx.wrap_socket(sock, server_hostname=hostname):
                 return True
-    except ConnectionResetError:
-        logging.warning('\x1B[31mHas SNI RST.\x1B[m')  # or \033
-        return False
     except ssl.SSLCertVerificationError:
-        logging.info('\x1B[32mNo SNI RST.\x1B[m')
+        logger.info('\x1B[32mNo SNI RST.\x1B[m')  # or \033
         return True
+    except ConnectionResetError:
+        logger.warning('\x1B[31mHas SNI RST.\x1B[m')
+        return False
     except socket.timeout:
-        logging.exception('\x1B[33mDFIP timed out.\x1B[m')
-    except ConnectionRefusedError:
-        logging.exception('\x1B[33mDFIP invalid.\x1B[m')
+        logger.error('\x1B[33mDFIP timed out.\x1B[m')
 
 
 def _main():
