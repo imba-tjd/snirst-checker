@@ -3,7 +3,7 @@
 Simple code to check whether a domain has SNI RST.
 
 ```bash
-git clone ... && pip install . --or-- pip install git+https://...
-sni bbc.com --or-- python -m sni bbc.com --or-- import sni; sni.check('bbc.com')
+pip install git+https://github.com/imba-tjd/snirst-checker
+sni bbc.com --or-- import sni; sni.check('bbc.com')
 pip uninstall snirst-checker
 ```
