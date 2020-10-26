@@ -1,5 +1,4 @@
-'''Check whether a domain has SNI RST.
-Set logger.disabled=True to avoid any output.'''
+'''Check whether a domain has SNI RST.'''
 import socket
 import ssl
 import sys
@@ -7,6 +6,7 @@ import logging
 
 
 logger = logging.getLogger(__name__)
+logger.disabled = True
 _ctx = ssl.create_default_context()
 
 
@@ -27,6 +27,7 @@ def check(hostname: str, dfip='104.131.212.184'):
 
 
 def _main():
+    logger.disabled = False
     logging.basicConfig(format='%(message)s', level=logging.INFO)
     if len(sys.argv) != 2:
         print('Invalid arguments.')
