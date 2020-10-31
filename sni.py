@@ -3,6 +3,7 @@ import socket
 import ssl
 import sys
 import logging
+import time
 
 
 logger = logging.getLogger(__name__)
@@ -26,13 +27,30 @@ def check(hostname: str, dfip='104.131.212.184'):
         logger.error('\x1B[33mDFIP timed out.\x1B[m')
 
 
+def checkmany(hostnames: list[str]):
+    '''Try to auto avoid temporary blocking when checking multiple domains in a short time.'''
+    def retry(fun, n=1, /, **kw):
+        if (status := fun(**kw)) != None:
+            return status
+        for _ in range(n):
+            time.sleep(60)
+            if (status := fun(**kw)) != None:
+                return status
+
+    for host in hostnames:
+        if (status := retry(check, hostname=host)) != None:
+            yield status
+        else:
+            break
+
+
 def _main():
     logger.disabled = False
     logging.basicConfig(format='%(message)s', level=logging.INFO)
     if len(sys.argv) != 2:
         print('Invalid arguments.')
     elif sys.argv[1][0] == '-':
-        print('There is no flags.')
+        print('There is no flag.')
     else:
         sys.exit(not check(sys.argv[1]))
 
