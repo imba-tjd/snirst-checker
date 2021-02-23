@@ -18,18 +18,18 @@ def check(hostname: str, dfip='104.131.212.184'):
             with _ctx.wrap_socket(sock, server_hostname=hostname):
                 return True
     except ssl.SSLCertVerificationError:
-        logger.info('\x1B[32mNo SNI RST.\x1B[m')  # or \033
+        logger.info('\x1B[32mNo SNI RST.\x1B[m', extra={'hostname': hostname})  # or \033
         return True
     except ConnectionResetError:
-        logger.warning('\x1B[31mHas SNI RST.\x1B[m')
+        logger.warning('\x1B[31mHas SNI RST.\x1B[m', extra={'hostname': hostname})
         return False
     except socket.timeout:
-        logger.error('\x1B[33mDFIP timed out.\x1B[m')
+        logger.error('\x1B[33mDFIP timed out.\x1B[m', extra={'dfip': dfip})
 
 
 def checkmany(hostnames: list[str]):
     '''Try to auto avoid temporary blocking when checking multiple domains in a short time.'''
-    def retry(fun, n=1, /, **kw):
+    def retry(fun, n=1, **kw):
         if (status := fun(**kw)) != None:
             return status
         for _ in range(n):
