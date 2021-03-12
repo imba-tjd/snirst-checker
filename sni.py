@@ -33,7 +33,7 @@ def checkmany(hostnames: list[str]):
         if (status := fun(**kw)) != None:
             return status
         for _ in range(n):
-            time.sleep(60)
+            time.sleep(200)
             if (status := fun(**kw)) != None:
                 return status
 
