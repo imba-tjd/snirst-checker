@@ -6,7 +6,7 @@ import logging
 
 
 logger = logging.getLogger(__name__)
-logger.disabled = True
+logger.addHandler(logging.NullHandler())
 _ctx = ssl.create_default_context()
 
 
@@ -27,7 +27,8 @@ def check(hostname: str, dfip='104.131.212.184'):
 
 
 def _main():
-    logger.disabled = False
+    global logger
+    logger = logging
     logging.basicConfig(format='%(message)s', level=logging.INFO)
     if len(sys.argv) != 2:
         print('Invalid arguments.')
