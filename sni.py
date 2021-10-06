@@ -27,8 +27,6 @@ def check(hostname: str, dfip='104.131.212.184'):
 
 
 def _main():
-    global logger
-    logger = logging
     logging.basicConfig(format='%(message)s', level=logging.INFO)
     if len(sys.argv) != 2:
         print('Invalid arguments.')
