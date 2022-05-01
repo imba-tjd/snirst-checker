@@ -3,6 +3,7 @@ import socket
 import ssl
 import sys
 import logging
+import os
 
 
 logger = logging.getLogger(__name__)
@@ -27,6 +28,7 @@ def check(hostname: str, dfip='104.131.212.184'):
 
 
 def _main():
+    os.system('') # Win下开启虚拟终端使得颜色转义有效
     logging.basicConfig(format='%(message)s', level=logging.INFO)
     if len(sys.argv) != 2:
         print('Invalid arguments.')
